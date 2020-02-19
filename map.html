@@ -15,13 +15,53 @@ body { height: 100% }
 <div id="map"></div>
 
 <script>
-var MyLatLng = new google.maps.LatLng(35.6811673, 139.7670516);
+var MyLatLng = new google.maps.LatLng(35.688036, 139.693435);
 var Options = {
-   zoom: 15,      //地図の縮尺値
-   center: MyLatLng,    //地図の中心座標
-   mapTypeId: 'roadmap'   //地図の種類
+    zoom: 17,      //地図の縮尺値
+    minZoom:17,
+    maxZoom:19,
+    center: MyLatLng,    //地図の中心座標
+    mapTypeId: 'roadmap',   //地図の種類
+    styles: 
+        [
+            { // 誰かが興味をもった場所非表示
+                featureType:'poi',
+                elementType:'all',
+                stylers:[{visibility: 'off' }]
+            }
+        ]
 };
-var map = new google.maps.Map(document.getElementById('map'), Options);
+var myMap = new google.maps.Map(document.getElementById('map'), Options);
+
+
+// マーカー
+var myMaker = new google.maps.Marker({
+  position: new google.maps.LatLng(35.688036, 139.693435),
+  map: myMap,
+  icon: {
+    url: 'images/pin_my_company.png',
+    size: new google.maps.Size(50,50),
+    scaledSize : new google.maps.Size(50, 50),
+    origin: new google.maps.Point(0,0),
+    anchor: new google.maps.Point(0,0)
+  }
+});
+
+// 吹き出し
+var myInfoWindow = new google.maps.InfoWindow({
+    // 吹き出しに出す文
+	content: '<div><h3>NSビルーーー！</h3><div style="text-align:center;"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Shinjuku-NS-Building-04.jpg" style="max-height:100px;max-width:100px"></div></div>'
+});
+
+myInfoWindow.open(myMap, myMaker);
+
+// 吹き出しが閉じられたら、マーカークリックで再び開くようにしておく
+google.maps.event.addListener(myInfoWindow, "closeclick", function() {
+    google.maps.event.addListenerOnce(myMaker, "click", function(event) {
+      myInfoWindow.open(myMap, myMaker);
+    });
+});
+
 </script>
 
 </body>
